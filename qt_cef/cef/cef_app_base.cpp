@@ -1,8 +1,9 @@
-#include "cef_app_impl.h"
+#include "cef_app_base.h"
 
 #include "include/cef_command_line.h"
 
-CefAppImpl::ProcessType CefAppImpl::GetProcessType(CefRefPtr<CefCommandLine> command_line)
+
+CefAppBase::ProcessType CefAppBase::GetProcessType(CefRefPtr<CefCommandLine> command_line)
 {
     auto type_key = "type";
 
@@ -20,10 +21,10 @@ CefAppImpl::ProcessType CefAppImpl::GetProcessType(CefRefPtr<CefCommandLine> com
     return OtherProcess;
 }
 
-CefAppImpl::CefAppImpl()
+CefAppBase::CefAppBase()
 {
 }
 
-CefAppImpl::~CefAppImpl()
+CefAppBase::~CefAppBase()
 {
 }

@@ -43,16 +43,13 @@
     <ClCompile Include="cef\cef_app_browser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cef\cef_client_impl.cpp">
+    <ClCompile Include="cef\cef_client_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cef\cef_app_render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cef\cef_app_impl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="log.cpp">
+    <ClCompile Include="cef\cef_app_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cef\cef_query_handler.cpp">
@@ -61,21 +58,27 @@
     <ClCompile Include="cef\cef_view_widget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="log\log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cef\cef_app_render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cef\cef_app_impl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="qt_delare_metatype.h">
+    <ClInclude Include="cef\cef_app_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="log\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cef\cef_global_define.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,10 +89,13 @@
     <QtMoc Include="cef\cef_query_handler.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="cef\cef_client_impl.h">
+    <QtMoc Include="cef\cef_client_base.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="cef\cef_view_widget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="app.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

@@ -1,9 +1,8 @@
-#include "cef_client_impl.h"
+#include "cef_client_base.h"
 
 #include <sstream>
 #include <string>
 
-#include "qt_delare_metatype.h"
 #include "include/base/cef_callback.h"
 #include "include/cef_app.h"
 #include "include/cef_parser.h"
@@ -11,39 +10,21 @@
 #include "include/views/cef_window.h"
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
-#include "log.h"
+#include "log/log.h"
 
 
-CefClientImpl::CefClientImpl()
+CefClientBase::CefClientBase()
+{
+
+}
+
+CefClientBase::~CefClientBase()
 {
 }
 
-CefClientImpl::~CefClientImpl()
+bool CefClientBase::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
 {
-}
-
-//CefClientBase::CefClientBase(bool is_alloy_style, CefQueryHandler *m_cef_query_handler)
-//    : is_alloy_style_(is_alloy_style){
-//    DCHECK(!g_instance);
-//    g_instance = this;
-//    m_message_handler.reset(m_cef_query_handler);
-//}
-//
-//CefClientBase::~CefClientBase() {
-//    g_instance = nullptr;
-//}
-//
-//// static
-//CefClientBase *CefClientBase::GetInstance() {
-//    return g_instance;
-//}
-//
-
-bool CefClientImpl::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
-{
-    QVariant var;
-    var.setValue(message);
-    emit SignalReceiveJsMessage(var);
+    emit SignalReceiveJsMessage(browser, frame, source_process, message);
 
     return true;
 
@@ -71,13 +52,11 @@ bool CefClientImpl::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefR
 //    }
 //}
 //
-void CefClientImpl::OnAfterCreated(CefRefPtr<CefBrowser> browser)
+void CefClientBase::OnAfterCreated(CefRefPtr<CefBrowser> browser)
 {
     CEF_REQUIRE_UI_THREAD();
 
-    QVariant var;
-    var.setValue(browser);
-    emit SignalAfterCreated(var);
+    emit SignalAfterCreated(browser);
 
     //// Add to the list of existing browsers.
     //browser_list_.push_back(browser);
@@ -93,7 +72,7 @@ void CefClientImpl::OnAfterCreated(CefRefPtr<CefBrowser> browser)
     //    m_message_router->AddHandler(m_message_handler.get(), false);
     //}
 }
-bool CefClientImpl::OnBeforePopup(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, const CefString &target_url, const CefString &target_frame_name, CefLifeSpanHandler::WindowOpenDisposition target_disposition, bool user_gesture, const CefPopupFeatures &popupFeatures, CefWindowInfo &windowInfo, CefRefPtr<CefClient> &client, CefBrowserSettings &settings, CefRefPtr<CefDictionaryValue> &extra_info, bool *no_javascript_access)
+bool CefClientBase::OnBeforePopup(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, const CefString &target_url, const CefString &target_frame_name, CefLifeSpanHandler::WindowOpenDisposition target_disposition, bool user_gesture, const CefPopupFeatures &popupFeatures, CefWindowInfo &windowInfo, CefRefPtr<CefClient> &client, CefBrowserSettings &settings, CefRefPtr<CefDictionaryValue> &extra_info, bool *no_javascript_access)
 {
     if (!target_url.empty())
     {
@@ -165,7 +144,7 @@ bool CefClientImpl::OnBeforePopup(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFr
 //    frame->LoadURL(GetDataURI(ss.str(), "text/html"));
 //}
 //
-bool CefClientImpl::OnPreKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent &event, CefEventHandle os_event, bool *is_keyboard_shortcut)
+bool CefClientBase::OnPreKeyEvent(CefRefPtr<CefBrowser> browser, const CefKeyEvent &event, CefEventHandle os_event, bool *is_keyboard_shortcut)
 {
     if (event.type == KEYEVENT_RAWKEYDOWN && (event.modifiers & EVENTFLAG_ALT_DOWN) && (event.modifiers & EVENTFLAG_CONTROL_DOWN)) {
         switch (event.windows_key_code) {

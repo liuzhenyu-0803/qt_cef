@@ -1,11 +1,11 @@
 #ifndef CEF_APP_BASE_H
 #define CEF_APP_BASE_H
 
-#include <vector>
 
 #include "include/cef_app.h"
 
-class CefAppImpl : public CefApp 
+
+class CefAppBase : public CefApp 
 {
 public:
     enum ProcessType 
@@ -18,12 +18,11 @@ public:
 
     static ProcessType GetProcessType(CefRefPtr<CefCommandLine> command_line);
 
-    CefAppImpl();
-    ~CefAppImpl();
+    CefAppBase();
+    ~CefAppBase();
 
 private:
-
-    DISALLOW_COPY_AND_ASSIGN(CefAppImpl);
+    DISALLOW_COPY_AND_ASSIGN(CefAppBase);
 };
 
 

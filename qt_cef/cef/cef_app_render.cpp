@@ -1,8 +1,7 @@
 #include "cef_app_render.h"
 
-#include "log.h"
-
-#include <QApplication>
+#include "log/log.h"
+#include "cef_global_define.h"
 
 
 const char *k_js_call_native_function_name = "callNativeFunction";
@@ -70,12 +69,21 @@ void ClientAppRender::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<
 {
     log("RenderApp::OnContextCreated");
 
+    browser_ = browser;
+
     auto window = context->GetGlobal();
     auto call_bridge = CefV8Value::CreateObject(nullptr, nullptr);
     CefRefPtr<CefV8Handler> handler = new V8HandlerImpl(frame);
     CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(k_js_call_native_function_name, handler);
     call_bridge->SetValue(k_js_call_native_function_name, func, V8_PROPERTY_ATTRIBUTE_NONE);
     window->SetValue("callBridge", call_bridge, V8_PROPERTY_ATTRIBUTE_NONE);
+
+
+    // 发送进程消息举例
+    auto msg = CefProcessMessage::Create(RENDER_TO_BROWSER_PROCESS_MESSAGE);
+    auto args = msg->GetArgumentList();
+    args->SetString(0, "i am a render process");
+    browser_->GetMainFrame()->SendProcessMessage(PID_BROWSER, msg);
 
     return;
 

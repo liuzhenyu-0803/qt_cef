@@ -2,11 +2,11 @@
 #define CEF_APP_RENDER_H_
 
 
-#include "cef_app_impl.h"
+#include "cef_app_base.h"
 #include "include/wrapper/cef_message_router.h"
 
 
-class ClientAppRender : public CefAppImpl, public CefRenderProcessHandler 
+class ClientAppRender : public CefAppBase, public CefRenderProcessHandler 
 {
 public:
     ClientAppRender();
@@ -35,6 +35,8 @@ public:
 		CefRefPtr<CefProcessMessage> message);
 
 private:
+	CefRefPtr<CefBrowser> browser_;
+
 	CefRefPtr<CefMessageRouterRendererSide> m_message_router;
 
     IMPLEMENT_REFCOUNTING(ClientAppRender);

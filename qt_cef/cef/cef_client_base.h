@@ -9,7 +9,7 @@
 #include "include/cef_client.h"
 
 
-class CefClientImpl :
+class CefClientBase :
     public QObject,
     public CefClient,
     public CefLifeSpanHandler,
@@ -19,12 +19,13 @@ class CefClientImpl :
     Q_OBJECT
 
 signals:
-    void SignalAfterCreated(QVariant var_browser);
-    void SignalReceiveJsMessage(QVariant var_message);
+    void SignalAfterCreated(CefRefPtr<CefBrowser> browser);
+    void SignalReceiveJsMessage(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefProcessId process_id, CefRefPtr<CefProcessMessage> process_message);
+    void SignalOnBeforeClose(CefRefPtr<CefBrowser> browser);
 
 public:
-    CefClientImpl();
-    ~CefClientImpl();
+    CefClientBase();
+    ~CefClientBase();
 
     CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() override 
     {
@@ -61,20 +62,15 @@ public:
         CefEventHandle os_event,
         bool *is_keyboard_shortcut) override;
 
+    virtual bool DoClose(CefRefPtr<CefBrowser> browser) { return true; }
 
-    //virtual bool OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
-    //    CefRefPtr<CefFrame> frame,
-    //    CefRefPtr<CefRequest> request,
-    //    bool user_gesture,
-    //    bool is_redirect) override;
-
-    //void ShowMainWindow();
 
 private:
     //CefRefPtr<CefMessageRouterBrowserSide> m_message_router;
     //std::unique_ptr<CefMessageRouterBrowserSide::Handler> m_message_handler;
 
-    IMPLEMENT_REFCOUNTING(CefClientImpl);
+    IMPLEMENT_REFCOUNTING(CefClientBase);
 };
+
 
 #endif  // CEF_CLIENT_BASE_H

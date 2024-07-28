@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .area {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 300px;
+            text-align: center;
+        }
+
+        button {
+            padding: 5px 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="area">
+            <button onclick="changeText(1)">call native function</button>
+            <br>
+            <textarea id="textarea1" placeholder="call native function"></textarea>
+        </div>
+        <div class="area">
+            <button onclick="changeText(2)">Change Text 2</button>
+            <br>
+            <textarea id="textarea2" placeholder="Display result from native call"></textarea>
+        </div>
+    </div>
+
+    <script>
+        function changeText(area) {
+            if (area == 1)
+            {
+                document.getElementById(`textarea1`).value = window.callBridge.callNativeFunction("js call native function");
+            }
+            else if (area == 2)
+            {
+            
+            }
+
+            //let newText = "New text for Area " + area;
+            //document.getElementById(`textarea${area}`).value = newText;
+        }
+
+        function callJsFunction(param) {
+            window.callBridge.callNativeFunction("native call js function \nparam is " + param)
+        }
+    </script>
+</body>
+</html>
