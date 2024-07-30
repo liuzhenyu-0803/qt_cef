@@ -129,9 +129,9 @@ void ClientAppRender::OnContextReleased(CefRefPtr<CefBrowser> browser, CefRefPtr
     m_message_router->OnContextReleased(browser, frame, context);
 }
 
-bool ClientAppRender::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefProcessId source_process, CefRefPtr<CefProcessMessage> message)
+bool ClientAppRender::OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefProcessId source_process, CefRefPtr<CefProcessMessage> process_message)
 {
-    log("RenderApp::OnProcessMessageReceived£º" + message->GetName().ToString());
+    log("RenderApp::OnProcessMessageReceived: " + process_message->GetName().ToString() + " " + process_message->GetArgumentList()->GetString(0).ToString());
 
     return true;
 

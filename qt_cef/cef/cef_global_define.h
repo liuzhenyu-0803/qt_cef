@@ -25,6 +25,7 @@ static void RegisterCefMetaType()
 
 
 const char *const RENDER_TO_BROWSER_PROCESS_MESSAGE = "RenderToBrowserProcessMessage";
+const char *const BROWSER_TO_RENDER_PROCESS_MESSAGE = "BrowserToRenderProcessMessage";
 
 
 #endif // CEF_GLOBAL_DEFINE_H

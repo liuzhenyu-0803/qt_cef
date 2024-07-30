@@ -1,7 +1,8 @@
 #include "cef_view_widget.h"
 
 #include "app.h"
-#include "cef/cef_client_base.h"
+#include "cef_client_base.h"
+#include "cef_global_define.h"
 
 #include <QVBoxLayout>
 #include <QWindow>
@@ -25,10 +26,6 @@ CefViewWidget::CefViewWidget(QWidget *parent)
         delete this;
     });
 
-    //connect(qApp, &QApplication::aboutToQuit, this, [=] {
-    //    delete this;
-    //});
-
     CreateBrowser();
 }
 
@@ -47,19 +44,6 @@ void CefViewWidget::CallJsFunction(const QString &func_name, const QString &func
 
             cef_browser_->GetMainFrame()->ExecuteJavaScript(code, frame->GetURL(), 0);
         }
-    }
-}
-
-void CefViewWidget::CloseBrowser()
-{
-    if (cef_browser_)
-    {
-        cef_browser_ = nullptr;
-    }
-
-    if (cef_client_)
-    {
-        cef_client_ = nullptr;
     }
 }
 
@@ -89,17 +73,15 @@ void CefViewWidget::OnBrowserAfterCreated(CefRefPtr<CefBrowser> browser)
 
 void CefViewWidget::OnReceiveJsMessage(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefProcessId process_id, CefRefPtr<CefProcessMessage> process_message)
 {
-    auto function_name = process_message->GetName();
+    emit SignalReceiveJsMessage(QString::fromStdString(process_message->GetName()), QString::fromStdString(process_message->GetArgumentList()->GetString(0).ToString()));
 
-    auto argument = process_message->GetArgumentList()->GetString(0);
+    QTimer::singleShot(0, [=] {
+        QMessageBox::information(this, QString::fromStdString(process_message->GetName()), QString::fromStdString(process_message->GetArgumentList()->GetString(0).ToString()));
 
-    emit SignalReceiveJsMessage(QString::fromStdString(function_name.ToString()), QString::fromStdString(argument.ToString()));
-
-    QLabel *label = new QLabel(this);
-    label->setText(QString::fromStdString(function_name.ToString()) + " : " + QString::fromStdString(argument.ToString()));
-
-    QTimer::singleShot(4000, [=] {
-        QMessageBox::information(this, QString::fromStdString(function_name.ToString()), QString::fromStdString(argument.ToString()));
+        auto msg = CefProcessMessage::Create(BROWSER_TO_RENDER_PROCESS_MESSAGE);
+        auto args = msg->GetArgumentList();
+        args->SetString(0, "i am a browser process");
+        frame->SendProcessMessage(PID_RENDERER, msg);
     });
 }
 

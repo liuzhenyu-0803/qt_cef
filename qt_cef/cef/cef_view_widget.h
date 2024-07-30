@@ -33,13 +33,13 @@ private slots:
 
 private:
     void CreateBrowser();
-    void CloseBrowser();
 
     void AdjustBrowserSize();
 
 private:
     CefRefPtr<CefBrowser> cef_browser_;
     CefRefPtr<CefClientBase> cef_client_;
+    QWidget *widget_;
 };
 
 
