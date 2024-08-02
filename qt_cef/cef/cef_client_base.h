@@ -62,9 +62,6 @@ public:
         CefEventHandle os_event,
         bool *is_keyboard_shortcut) override;
 
-    virtual bool DoClose(CefRefPtr<CefBrowser> browser) { return true; }
-
-
 private:
     //CefRefPtr<CefMessageRouterBrowserSide> m_message_router;
     //std::unique_ptr<CefMessageRouterBrowserSide::Handler> m_message_handler;

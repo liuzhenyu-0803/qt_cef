@@ -9,6 +9,8 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QWindow>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 #include <QPainter>
 #include <QTimer>
@@ -40,7 +42,7 @@ void CefViewWidget::CallJsFunction(const QString &func_name, const QString &func
     {
         if (auto frame = cef_browser_->GetMainFrame())
         {
-            auto code = QString("callJsFunction('%1');").arg(func_name).toStdString();
+            auto code = QString("callJsFunction('func_name: %1, func_param: %2');").arg(func_name).arg(func_param).toStdString();
 
             cef_browser_->GetMainFrame()->ExecuteJavaScript(code, frame->GetURL(), 0);
         }
@@ -78,10 +80,10 @@ void CefViewWidget::OnReceiveJsMessage(CefRefPtr<CefBrowser> browser, CefRefPtr<
     QTimer::singleShot(0, [=] {
         QMessageBox::information(this, QString::fromStdString(process_message->GetName()), QString::fromStdString(process_message->GetArgumentList()->GetString(0).ToString()));
 
-        auto msg = CefProcessMessage::Create(BROWSER_TO_RENDER_PROCESS_MESSAGE);
-        auto args = msg->GetArgumentList();
-        args->SetString(0, "i am a browser process");
-        frame->SendProcessMessage(PID_RENDERER, msg);
+        //auto msg = CefProcessMessage::Create(BROWSER_TO_RENDER_PROCESS_MESSAGE);
+        //auto args = msg->GetArgumentList();
+        //args->SetString(0, "i am a browser process");
+        //frame->SendProcessMessage(PID_RENDERER, msg);
     });
 }
 

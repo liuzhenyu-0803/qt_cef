@@ -4,13 +4,14 @@
 #include "cef_global_define.h"
 
 
-const char *k_js_call_native_function_name = "callNativeFunction";
+const char *JS_CALL_NATIVE_FUNCTION_NAME = "callNativeFunction";
+
 
 class V8HandlerImpl : public CefV8Handler
 {
 public:
-    V8HandlerImpl(CefRefPtr<CefFrame> frame) 
-        : frame_(frame)
+    V8HandlerImpl(/*CefRefPtr<CefFrame> frame*/)
+        //: frame_(frame)
     {}
 
     bool Execute(const CefString &name,
@@ -19,29 +20,37 @@ public:
         CefRefPtr<CefV8Value> &retval,
         CefString &exception) override
     {
-        if (name == k_js_call_native_function_name)
+        if (name == JS_CALL_NATIVE_FUNCTION_NAME)
         {
             auto params = arguments.at(0)->GetStringValue().ToString();
 
-            // 发送进程消息举例
             auto msg = CefProcessMessage::Create(name);
             auto args = msg->GetArgumentList();
             args->SetString(0, params);
-            frame_->SendProcessMessage(PID_BROWSER, msg);
+            browser_->GetMainFrame()->SendProcessMessage(PID_BROWSER, msg);
 
             retval = CefV8Value::CreateString("callNativeFunction sucess");
-            
+
             return true;
         }
 
         return false;
     }
 
-    private:
-        CefRefPtr<CefFrame> frame_;
+    void SetBrowser(CefRefPtr<CefBrowser> browser)
+    {
+        browser_ = browser;
+    }
+
+private:
+    CefRefPtr<CefBrowser> browser_;
 
     IMPLEMENT_REFCOUNTING(V8HandlerImpl);
 };
+
+
+CefRefPtr<V8HandlerImpl> handler;
+
 
 ClientAppRender::ClientAppRender()
 {
@@ -51,6 +60,23 @@ ClientAppRender::ClientAppRender()
 void ClientAppRender::OnWebKitInitialized()
 {
     log("RenderApp::OnWebKitInitialized");
+
+    std::string extensionCode =
+        "var callNativeBridge;"
+        "if (!callNativeBridge)"
+        "   callNativeBridge = {};"
+        "(function() {"
+        "   callNativeBridge.callNativeFunction = function(text) {"
+        "       native function callNativeFunction();"
+        "       return callNativeFunction(text);"
+        "   };"
+        "})();";
+
+    handler = new V8HandlerImpl();
+
+    CefRegisterExtension("v8/myextension", extensionCode, handler);
+
+    return;
 
     if (m_message_router == NULL) {
         // Create the renderer-side router for query handling.
@@ -71,19 +97,23 @@ void ClientAppRender::OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<
 
     browser_ = browser;
 
-    auto window = context->GetGlobal();
-    auto call_bridge = CefV8Value::CreateObject(nullptr, nullptr);
-    CefRefPtr<CefV8Handler> handler = new V8HandlerImpl(frame);
-    CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(k_js_call_native_function_name, handler);
-    call_bridge->SetValue(k_js_call_native_function_name, func, V8_PROPERTY_ATTRIBUTE_NONE);
-    window->SetValue("callBridge", call_bridge, V8_PROPERTY_ATTRIBUTE_NONE);
+    handler->SetBrowser(browser_);
+
+
+    //auto window = context->GetGlobal();
+    //auto call_bridge = CefV8Value::CreateObject(nullptr, nullptr);
+    //CefRefPtr<CefV8Handler> handler = new V8HandlerImpl(frame);
+    //CefRefPtr<CefV8Value> func = CefV8Value::CreateFunction(k_js_call_native_function_name, handler);
+    //call_bridge->SetValue(k_js_call_native_function_name, func, V8_PROPERTY_ATTRIBUTE_NONE);
+    //window->SetValue("callBridge", call_bridge, V8_PROPERTY_ATTRIBUTE_NONE);
 
 
     // 发送进程消息举例
-    auto msg = CefProcessMessage::Create(RENDER_TO_BROWSER_PROCESS_MESSAGE);
-    auto args = msg->GetArgumentList();
-    args->SetString(0, "i am a render process");
-    browser_->GetMainFrame()->SendProcessMessage(PID_BROWSER, msg);
+    //auto msg = CefProcessMessage::Create(RENDER_TO_BROWSER_PROCESS_MESSAGE);
+    //auto args = msg->GetArgumentList();
+    //args->SetString(0, "i am a render process");
+    //browser_->GetMainFrame()->SendProcessMessage(PID_BROWSER, msg);
+
 
     return;
 

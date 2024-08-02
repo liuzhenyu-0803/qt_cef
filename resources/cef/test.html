@@ -32,12 +32,15 @@
         <div class="area">
             <button onclick="changeText(1)">call native function</button>
             <br>
-            <textarea id="textarea1" placeholder="call native function"></textarea>
+            <textarea id="textarea1" placeholder="Display result from js call native"></textarea>
         </div>
         <div class="area">
             <button onclick="changeText(2)">Change Text 2</button>
             <br>
             <textarea id="textarea2" placeholder="Display result from native call"></textarea>
+        </div>
+        <div class="area">
+            <textarea id="textarea3" placeholder="Display result from native call js"></textarea>
         </div>
     </div>
 
@@ -45,7 +48,7 @@
         function changeText(area) {
             if (area == 1)
             {
-                document.getElementById(`textarea1`).value = window.callBridge.callNativeFunction("js call native function");
+                document.getElementById(`textarea1`).value = callNativeBridge.callNativeFunction(document.getElementById(`textarea1`).value);
             }
             else if (area == 2)
             {
@@ -57,7 +60,7 @@
         }
 
         function callJsFunction(param) {
-            window.callBridge.callNativeFunction("native call js function \nparam is " + param)
+            document.getElementById(`textarea3`).value = param;
         }
     </script>
 </body>
